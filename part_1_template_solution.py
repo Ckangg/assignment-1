@@ -118,12 +118,17 @@ class Section1:
         X: NDArray[np.floating],
         y: NDArray[np.int32],
     ):
+        X, y, Xtest, ytest = u.prepare_data()
+        Xtrain, ytrain = u.filter_out_7_9s(X, y)
+        Xtest, ytest = u.filter_out_7_9s(Xtest, ytest)
+        Xtrain = nu.scale_data(Xtrain)
+        Xtest = nu.scale_data(Xtest)
         # Enter your code and fill the `answer` dictionary
         clf = DecisionTreeClassifier(random_state=42)
 
         cv = KFold(n_splits=5, shuffle=True, random_state=42)
 
-        results=train_simple_classifier_with_cv(Xtrain,ytrain,clf,cv)
+        results=train_simple_classifier_with_cv(Xtrain=Xtrain,ytrain=ytrain,clf=clf,cv=cv)
         pc1={}
         pc1['mean_fit_time']=results['fit_time'].mean()
         pc1['std_fit_time']=results['fit_time'].std()
@@ -148,13 +153,18 @@ class Section1:
         X: NDArray[np.floating],
         y: NDArray[np.int32],
     ):
+        X, y, Xtest, ytest = u.prepare_data()
+        Xtrain, ytrain = u.filter_out_7_9s(X, y)
+        Xtest, ytest = u.filter_out_7_9s(Xtest, ytest)
+        Xtrain = nu.scale_data(Xtrain)
+        Xtest = nu.scale_data(Xtest)
         # Enter your code and fill the `answer` dictionary
 
         # Answer: same structure as partC, except for the key 'explain_kfold_vs_shuffle_split'
         clf = DecisionTreeClassifier(random_state=42)
 
         cv = ShuffleSplit(n_splits=5, test_size=0.2, random_state=42)
-        results=train_simple_classifier_with_cv(Xtrain,ytrain,clf,cv)
+        results=train_simple_classifier_with_cv(Xtrain=Xtrain,ytrain=ytrain,clf=clf,cv=cv)
         pd1={}
         pd1['mean_fit_time']=results['fit_time'].mean()
         pd1['std_fit_time']=results['fit_time'].std()
@@ -179,6 +189,11 @@ class Section1:
         X: NDArray[np.floating],
         y: NDArray[np.int32],
     ):
+        X, y, Xtest, ytest = u.prepare_data()
+        Xtrain, ytrain = u.filter_out_7_9s(X, y)
+        Xtest, ytest = u.filter_out_7_9s(Xtest, ytest)
+        Xtrain = nu.scale_data(Xtrain)
+        Xtest = nu.scale_data(Xtest)
         # Answer: built on the structure of partC
         # `answer` is a dictionary with keys set to each split, in this case: 2, 5, 8, 16
         # Therefore, `answer[k]` is a dictionary with keys: 'scores', 'cv', 'clf`
@@ -196,9 +211,7 @@ class Section1:
             pe1[k] = {'Mean accuracy': mean_accuracy, 'Standard deviation': std_accuracy, 'Mean fit time': mean_fit_time, 'Standard deviation of fit time': std_fit_time}
             
     
-        for k, metrics in pe1.items():
-            print(f"k={k}: Mean accuracy = {metrics['Mean accuracy']:.4f}, Standard deviation = {metrics['Standard deviation']:.4f}, Mean fit time = {metrics['Mean fit time']:.4f}, Standard deviation of fit time = {metrics['Standard deviation of fit time']:.4f}")
-        answer = {}
+        
         answer["clf"] = clf
         answer["cv"] = cv
         answer["scores"] = pe1
@@ -229,7 +242,11 @@ class Section1:
         y: NDArray[np.int32],
     ) -> dict[str, Any]:
         """ """
-
+        X, y, Xtest, ytest = u.prepare_data()
+        Xtrain, ytrain = u.filter_out_7_9s(X, y)
+        Xtest, ytest = u.filter_out_7_9s(Xtest, ytest)
+        Xtrain = nu.scale_data(Xtrain)
+        Xtest = nu.scale_data(Xtest)
         answer = {}
         cv = ShuffleSplit(n_splits=5, test_size=0.2, random_state=42)
 
@@ -350,7 +367,11 @@ class Section1:
          5) max_features 
          5) n_estimators
         """
-
+        X, y, Xtest, ytest = u.prepare_data()
+        Xtrain, ytrain = u.filter_out_7_9s(X, y)
+        Xtest, ytest = u.filter_out_7_9s(Xtest, ytest)
+        Xtrain = nu.scale_data(Xtrain)
+        Xtest = nu.scale_data(Xtest)
         answer = {}
         param_grid = {
             'criterion': ['gini', 'entropy'],
@@ -365,31 +386,31 @@ class Section1:
         
         # GridSearchCV
         grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=5, scoring='accuracy', n_jobs=-1)
-        grid_search.fit(X_train_79, y_train_79)
+        grid_search.fit(Xtrain, ytrain)
         
         # Best estimator
         best_rf = grid_search.best_estimator_
         
         # Fit the original and best estimator to compute confusion matrices
-        rf.fit(X_train_79, y_train_79)  # Original estimator
-        y_pred_train_orig = rf.predict(X_train_79)
-        y_pred_test_orig = rf.predict(X_test_79)
+        rf.fit(Xtrain, ytrain)  # Original estimator
+        y_pred_train_orig = rf.predict(Xtrain)
+        y_pred_test_orig = rf.predict(Xtest)
         
         # Best estimator predictions
-        y_pred_train_best = best_rf.predict(X_train_79)
-        y_pred_test_best = best_rf.predict(X_test_79)
+        y_pred_train_best = best_rf.predict(Xtrain)
+        y_pred_test_best = best_rf.predict(Xtest)
         
         # Confusion matrices
-        confusion_matrix_train_orig = confusion_matrix(y_train_79, y_pred_train_orig)
-        confusion_matrix_train_best = confusion_matrix(y_train_79, y_pred_train_best)
-        confusion_matrix_test_orig = confusion_matrix(y_test_79, y_pred_test_orig)
-        confusion_matrix_test_best = confusion_matrix(y_test_79, y_pred_test_best)
+        confusion_matrix_train_orig = confusion_matrix(ytrain, y_pred_train_orig)
+        confusion_matrix_train_best = confusion_matrix(ytrain, y_pred_train_best)
+        confusion_matrix_test_orig = confusion_matrix(ytest, y_pred_test_orig)
+        confusion_matrix_test_best = confusion_matrix(ytest, y_pred_test_best)
         
         # Accuracy scores
-        accuracy_orig_full_training = accuracy_score(y_train_79, y_pred_train_orig)
-        accuracy_best_full_training = accuracy_score(y_train_79, y_pred_train_best)
-        accuracy_orig_full_testing = accuracy_score(y_test_79, y_pred_test_orig)
-        accuracy_best_full_testing = accuracy_score(y_test_79, y_pred_test_best)
+        accuracy_orig_full_training = accuracy_score(ytrain, y_pred_train_orig)
+        accuracy_best_full_training = accuracy_score(ytrain, y_pred_train_best)
+        accuracy_orig_full_testing = accuracy_score(ytest, y_pred_test_orig)
+        accuracy_best_full_testing = accuracy_score(ytest, y_pred_test_best)
         
         # Answer dictionary
         answer = {

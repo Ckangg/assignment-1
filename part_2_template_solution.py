@@ -4,6 +4,8 @@
 import numpy as np
 from numpy.typing import NDArray
 from typing import Any
+import utils as u
+import new_utils as nu
 
 # ======================================================================
 
@@ -133,9 +135,68 @@ class Section2:
     ) -> dict[int, dict[str, Any]]:
         """ """
         # Enter your code and fill the `answer`` dictionary
+        Xtrain, ytrain, Xtest, ytest = u.prepare_data()
+        Xtrain = nu.scale_data(Xtrain)
+        Xtest = nu.scale_data(Xtest)
         answer = {}
-        
-
+       
+        pb2={}
+        sizes = [(1000, 200), (5000, 1000), (10000, 2000)]
+        X_train, y_train, X_test, y_test = prepare_data()
+        if scale(X_train) and scale(X_test):
+            print("Scaling successful")
+        else:
+            print("Scaling failed")
+        for ntrain, ntest in sizes:
+                    Xtrain, ytrain = X[:ntrain], y[:ntrain]
+                    Xtest, ytest = X[ntrain:ntrain+ntest], y[ntrain:ntrain+ntest]
+                    clf = DecisionTreeClassifier(random_state=42)
+                    cv = KFold(n_splits=5, shuffle=True, random_state=42)
+                    results=train_simple_classifier_with_cv(Xtrain=Xtrain,ytrain=ytrain,clf=clf,cv=cv)
+                    pb2 = {
+                            'mean_fit_time': results['fit_time'].mean(),
+                            'std_fit_time': results['fit_time'].std(),
+                            'mean_accuracy': results['test_score'].mean(),
+                            'std_accuracy': results['test_score'].std(),
+                            "clf": clf,  
+                            "cv": cv
+                        }
+                    clf = DecisionTreeClassifier(random_state=42)
+                    cv = ShuffleSplit(n_splits=5, test_size=0.2, random_state=42)
+                    results=train_simple_classifier_with_cv(Xtrain=Xtrain,ytrain=ytrain,clf=clf,cv=cv)
+                    pb3 = {
+                            'mean_fit_time': results['fit_time'].mean(),
+                            'std_fit_time': results['fit_time'].std(),
+                            'mean_accuracy': results['test_score'].mean(),
+                            'std_accuracy': results['test_score'].std(),
+                            "clf": clf,  
+                            "cv": cv
+                        }
+                    cv = ShuffleSplit(n_splits=5, test_size=0.2, random_state=42)
+                    clf = LogisticRegression(max_iter=300, multi_class='ovr', solver='lbfgs')
+                    clf.fit(Xtrain, ytrain)
+                    results=train_simple_classifier_with_cv(Xtrain=Xtrain,ytrain=ytrain,clf=clf,cv=cv)
+                    pb4 = {
+                            'mean_fit_time': results['fit_time'].mean(),
+                            'std_fit_time': results['fit_time'].std(),
+                            'mean_accuracy': results['test_score'].mean(),
+                            'std_accuracy': results['test_score'].std(),
+                            "clf": clf,  
+                            "cv": cv
+                        }
+                    class_count_train = list(Counter(ytrain).values())
+                    class_count_test = list(Counter(ytest).values())
+                    key = f"train_{ntrain}_test_{ntest}"
+                    answer[key] = {
+                    "partC": pb2,
+                    "partD": pb3,
+                    "partF": pb4,
+                    "ntrain": ntrain,
+                    "ntest": ntest,
+                    "class_count_train": class_count_train,
+                    "class_count_test": class_count_test,
+                    }
+        answer=answer
         """
         `answer` is a dictionary with the following keys:
            - 1000, 5000, 10000: each key is the number of training samples

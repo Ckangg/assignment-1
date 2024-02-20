@@ -51,7 +51,39 @@ class Section2:
         NDArray[np.floating],
         NDArray[np.int32],
     ]:
+        Xtrain, ytrain, Xtest, ytest = u.prepare_data()
+        Xtrain = nu.scale_data(Xtrain)
+        Xtest = nu.scale_data(Xtest)
         answer = {}
+        nb_classes_train = len(np.unique(y_train))
+        nb_classes_test = len(np.unique(y_test))
+        class_count_train = Counter(y_train)
+        class_count_test = Counter(y_test)
+        
+        # Calculate lengths of the datasets and their labels
+        length_Xtrain = X_train.shape[0]
+        length_Xtest = X_test.shape[0]
+        length_ytrain = len(y_train)
+        length_ytest = len(y_test)
+        
+        # Find the maximum values in the training and testing datasets
+        max_Xtrain = X_train.max()
+        max_Xtest = X_test.max()
+        
+        # Fill the answer dictionary
+        answer = {
+            "nb_classes_train": nb_classes_train,
+            "nb_classes_test": nb_classes_test,
+            "class_count_train": class_count_train,
+            "class_count_test": class_count_test,
+            "length_Xtrain": length_Xtrain,
+            "length_Xtest": length_Xtest,
+            "length_ytrain": length_ytrain,
+            "length_ytest": length_ytest,
+            "max_Xtrain": max_Xtrain,
+            "max_Xtest": max_Xtest
+        }
+        
         # Enter your code and fill the `answer`` dictionary
 
         # `answer` is a dictionary with the following keys:
@@ -102,6 +134,7 @@ class Section2:
         """ """
         # Enter your code and fill the `answer`` dictionary
         answer = {}
+        
 
         """
         `answer` is a dictionary with the following keys:

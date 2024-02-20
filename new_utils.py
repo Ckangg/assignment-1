@@ -1,6 +1,7 @@
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+from collections import Counter
 from sklearn.metrics import top_k_accuracy_score
 from sklearn.metrics import make_scorer, accuracy_score, precision_score, recall_score, f1_score
 from typing import Type, Dict

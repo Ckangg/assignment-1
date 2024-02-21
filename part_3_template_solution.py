@@ -94,7 +94,7 @@ class Section3:
              
              train_scores = [top_k_accuracy_score(ytrain, model.predict_proba(Xtrain), k=k) for k in ks]
              test_scores = [top_k_accuracy_score(ytest, model.predict_proba(Xtest), k=k) for k in ks]
-             
+             '''
              plt.figure(figsize=(8, 5))
              plt.plot(ks, train_scores, label='Training', marker='o')
              plt.plot(ks, test_scores, label='Testing', marker='o')
@@ -104,6 +104,7 @@ class Section3:
              plt.legend()
              plt.grid(True)
              plt.show()
+             '''
              
              for k, score_train, score_test in zip(ks, train_scores, test_scores):
                  answer[k] = {"score_train": score_train, "score_test": score_test}
@@ -232,6 +233,7 @@ class Section3:
         conf_mattrain = confusion_matrix(ytrain, y_pred)
         y_pred = svc_classifier.predict(Xtest)
         conf_mattest= confusion_matrix(ytest,y_pred)
+        '''
         plt.figure(figsize=(10, 7))
         sns.heatmap(conf_mattrain, annot=True, fmt='g')
         plt.title('Confusion Matrix')
@@ -244,6 +246,7 @@ class Section3:
         plt.xlabel('Predicted labels')
         plt.ylabel('True labels')
         plt.show()
+        '''
         answer = {
         "scores": {
         "mean_accuracy": scores_summary['test_accuracy']['mean'],
@@ -311,8 +314,10 @@ class Section3:
            'recall': make_scorer(recall_score, average='macro'),
            'f1_score': make_scorer(f1_score, average='macro')}
         svc_cv_results = cross_validate(svc_classifier, Xtrain, ytrain, cv=cv, scoring=scoring)
+        '''
         for metric_name, scores in svc_cv_results.items():
            print(f"{metric_name}: Mean={np.mean(scores)}, Std={np.std(scores)}")
+        '''
         scores_summary = {metric: {"mean": np.mean(scores), "std": np.std(scores)} 
                   for metric, scores in svc_cv_results.items() if 'test_' in metric}
         is_precision_higher_than_recall = scores_summary['test_precision']['mean'] > scores_summary['test_recall']['mean']

@@ -341,7 +341,7 @@ class Section3:
         "explain_purpose_of_class_weights":"use class_weights it can help balance the dataset, even one label is smaller than another, the model can still distinguish it because it has a higher weight",
         "explain_performance_difference":"the recall becomes higher and precision becomes lower",
         "is_precision_higher_than_recall": is_precision_higher_than_recall,
-       
+        "explain_is_precision_higher_than_recall": "use the classweight to reduce the influence of imbalanced data, it will be useful to improve the model",
         "confusion_matrix_train": conf_mattrain,
         "confusion_matrix_test": conf_mattest}
 

@@ -221,8 +221,8 @@ class Section3:
            'recall': make_scorer(recall_score, average='macro'),
            'f1_score': make_scorer(f1_score, average='macro')}
         svc_cv_results = cross_validate(svc_classifier, Xtrain, ytrain, cv=cv, scoring=scoring)
-        for metric_name, scores in svc_cv_results.items():
-           print(f"{metric_name}: Mean={np.mean(scores)}, Std={np.std(scores)}")
+        '''for metric_name, scores in svc_cv_results.items():
+           print(f"{metric_name}: Mean={np.mean(scores)}, Std={np.std(scores)}")'''
         scores_summary = {metric: {"mean": np.mean(scores), "std": np.std(scores)} 
                   for metric, scores in svc_cv_results.items() if 'test_' in metric}
         is_precision_higher_than_recall = scores_summary['test_precision']['mean'] > scores_summary['test_recall']['mean']
@@ -307,7 +307,7 @@ class Section3:
         cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
         class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(ytrain), y=ytrain)
         class_weights_dict = {0: class_weights[0], 1: class_weights[1]}
-        print("Class weights:", class_weights_dict)
+        '''print("Class weights:", class_weights_dict)'''
         svc_classifier = SVC(class_weight=class_weights_dict, random_state=42)
         scoring = {'accuracy': make_scorer(accuracy_score),
            'precision': make_scorer(precision_score, average='macro'),

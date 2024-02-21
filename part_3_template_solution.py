@@ -225,14 +225,21 @@ class Section3:
         scores_summary = {metric: {"mean": np.mean(scores), "std": np.std(scores)} 
                   for metric, scores in svc_cv_results.items() if 'test_' in metric}
         is_precision_higher_than_recall = scores_summary['test_precision']['mean'] > scores_summary['test_recall']['mean']
-        classifier = SVC(random_state=42)
-        X2 = np.concatenate((Xtrain, Xtest), axis=0)
-        y2 = np.concatenate((ytrain, ytest), axis=0)
-        classifier.fit(X2, y2)
-        y_pred = classifier.predict(X2)
-        conf_mat = confusion_matrix(y2, y_pred)
+        
+        
+        svc_classifier.fit(Xtrain, ytrain)
+        y_pred = svc_classifier.predict(Xtrain)
+        conf_mattrain = confusion_matrix(ytrain, y_pred)
+        y_pred = svc_classifier.predict(Xtest)
+        conf_mattest= confusion_matrix(ytest,y_pred)
         plt.figure(figsize=(10, 7))
-        sns.heatmap(conf_mat, annot=True, fmt='g')
+        sns.heatmap(conf_mattrain, annot=True, fmt='g')
+        plt.title('Confusion Matrix')
+        plt.xlabel('Predicted labels')
+        plt.ylabel('True labels')
+        plt.show()
+        plt.figure(figsize=(10, 7))
+        sns.heatmap(conf_mattest, annot=True, fmt='g')
         plt.title('Confusion Matrix')
         plt.xlabel('Predicted labels')
         plt.ylabel('True labels')
@@ -252,7 +259,8 @@ class Section3:
         "clf": svc_classifier,
         "is_precision_higher_than_recall": is_precision_higher_than_recall,
         "explain_is_precision_higher_than_recall": "the model is more likely to predict the positive class, because it is an imbalanced dataset, so if we don't change the weights of change the threshold, it will show the imbalanced result",
-        "confusion_matrix": conf_mat  # Confusion matrix for the combined dataset
+        "confusion_matrix_train": conf_mattrain ,
+        "confusion_matrix_test": conf_mattest  # Confusion matrix for the combined dataset
         }
         """
         Answer is a dictionary with the following keys: 
@@ -331,9 +339,9 @@ class Section3:
         "clf": svc_classifier,
         "class_weights": class_weights,
         "explain_purpose_of_class_weights":"use class_weights it can help balance the dataset, even one label is smaller than another, the model can still distinguish it because it has a higher weight",
-        "explain_performance_difference":"no",
+        "explain_performance_difference":"the recall becomes higher and precision becomes lower",
         "is_precision_higher_than_recall": is_precision_higher_than_recall,
-        "explain_is_precision_higher_than_recall": "use the classweight to reduce the influence of imbalanced data, it will be useful to improve the model",
+       
         "confusion_matrix_train": conf_mattrain,
         "confusion_matrix_test": conf_mattest}
 

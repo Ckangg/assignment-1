@@ -10,8 +10,7 @@ from sklearn.utils.class_weight import compute_class_weight
 from sklearn.model_selection import cross_validate, StratifiedKFold
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
-'''import seaborn as sns'''
-'''import matplotlib.pyplot as plt'''
+
 from sklearn.model_selection import cross_validate, StratifiedKFold
 from numpy.typing import NDArray
 from sklearn import datasets
